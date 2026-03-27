@@ -193,9 +193,9 @@ button, a { font-family: inherit; }
 
 /* ─── Sidebar ─── */
 .sidebar {
-  width: 220px;
+  width: 240px;
   min-height: 100vh;
-  background: rgba(20,20,24,0.95);
+  background: rgba(14,14,18,0.97);
   border-right: 1px solid var(--color-surface-border);
   position: fixed;
   top: 0;
@@ -204,12 +204,19 @@ button, a { font-family: inherit; }
   z-index: 20;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
 }
 
 .sidebar-header {
-  padding: 20px 16px 18px;
+  padding: 22px 18px 20px;
   border-bottom: 1px solid var(--color-surface-border);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .sidebar-logo-label {
@@ -228,11 +235,13 @@ button, a { font-family: inherit; }
 }
 
 .sidebar-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 2px;
   letter-spacing: 0.3px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
 }
 
 .sidebar-nav {
@@ -296,31 +305,136 @@ button, a { font-family: inherit; }
 
 /* ─── Main content ─── */
 .main {
-  margin-left: 220px;
+  margin-left: 240px;
   flex: 1;
-  padding: 36px 48px;
+  padding: 44px 56px;
   min-height: 100vh;
   animation: fadeIn 0.6s ease both;
 }
 
+/* ─── Section headers (from Monday Drop) ─── */
+.section-eyebrow {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.section-headline {
+  font-size: 42px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.15; margin-bottom: 16px;
+}
+.section-subline {
+  font-size: 17px; color: var(--text-secondary); line-height: 1.65; max-width: 640px;
+}
+
+/* ─── Stage stripe (from Monday Drop) ─── */
+.stage-stripe {
+  width: 4px; border-radius: 4px; flex-shrink: 0;
+  align-self: stretch; min-height: 100%;
+}
+.stage-stripe.teal { background: linear-gradient(to bottom, var(--accent-teal), transparent); }
+.stage-stripe.purple { background: linear-gradient(to bottom, var(--accent-purple), transparent); }
+.stage-stripe.amber { background: linear-gradient(to bottom, var(--accent-amber), transparent); }
+.stage-stripe.pink { background: linear-gradient(to bottom, var(--color-virlo), transparent); }
+.stage-stripe.green { background: linear-gradient(to bottom, var(--accent-green), transparent); }
+.stage-stripe.sky { background: linear-gradient(to bottom, var(--accent-sky), transparent); }
+.stage-stripe.red { background: linear-gradient(to bottom, var(--accent-red), transparent); }
+
+/* ─── Glass card with stripe ─── */
+.glass-card-inner {
+  display: flex;
+}
+.glass-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Expandable card (from Monday Drop) ─── */
+.expandable-card {
+  background: rgba(20,20,24,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px; overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.expandable-card:hover { border-color: rgba(236,53,134,0.2); }
+.expandable-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; cursor: pointer; user-select: none;
+}
+.expandable-body {
+  padding: 0 24px; max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.expandable-body.open { max-height: 1200px; padding: 0 24px 24px; }
+.expand-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text-muted); flex-shrink: 0;
+  transition: transform 0.3s, background 0.2s;
+}
+.expand-icon.open { transform: rotate(45deg); background: rgba(236,53,134,0.1); color: var(--color-virlo); }
+
+/* ─── Proof card ─── */
+.proof-card {
+  background: rgba(20,20,24,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  margin-bottom: 16px;
+}
+.proof-card:last-child { margin-bottom: 0; }
+.proof-card:hover {
+  border-color: rgba(236,53,134,0.3);
+  box-shadow: 0 0 30px rgba(236,53,134,0.06), 0 8px 32px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+}
+.proof-card-header {
+  padding: 18px 24px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.proof-card-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.proof-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.proof-card-body {
+  padding: 16px 24px;
+}
+
 /* ─── Segment header ─── */
 .seg-header {
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
   animation: fadeIn 0.6s ease both;
+}
+
+.seg-header-eyebrow {
+  margin-bottom: 16px;
 }
 
 .seg-header-top {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 10px;
+  gap: 16px;
+  margin-bottom: 12px;
 }
 
-.seg-icon { font-size: 36px; line-height: 1; }
+.seg-icon { font-size: 44px; line-height: 1; }
 
 .seg-label {
-  font-size: 28px;
+  font-size: 42px;
   font-weight: 800;
+  letter-spacing: -1.5px;
   background: linear-gradient(135deg, #ff6b9d 0%, #ec3586 40%, #a78bfa 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -329,19 +443,19 @@ button, a { font-family: inherit; }
 }
 
 .seg-persona {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-virlo-light);
-  margin-top: 2px;
+  margin-top: 4px;
   font-style: italic;
 }
 
 .seg-market {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-secondary);
-  line-height: 1.65;
-  max-width: 760px;
-  margin-bottom: 14px;
+  line-height: 1.7;
+  max-width: 780px;
+  margin-bottom: 18px;
 }
 
 .seg-clusters {
@@ -435,9 +549,9 @@ button, a { font-family: inherit; }
 /* ─── Tabs ─── */
 .tabs {
   display: flex;
-  gap: 0;
+  gap: 4px;
   border-bottom: 1px solid var(--color-surface-border);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .tab-btn {
@@ -446,55 +560,56 @@ button, a { font-family: inherit; }
   border-bottom: 2px solid transparent;
   background: transparent;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: -1px;
   letter-spacing: 0.2px;
+  border-radius: 8px 8px 0 0;
 }
 
-.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn:hover { color: var(--text-secondary); background: rgba(255,255,255,0.03); }
 
 .tab-btn.active {
   color: var(--color-virlo-light);
   border-bottom-color: var(--color-virlo);
+  background: rgba(236,53,134,0.05);
 }
 
 /* ─── Card internals ─── */
 .card-header {
-  padding: 14px 20px;
+  padding: 18px 24px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.card-header-icon { font-size: 14px; }
+.card-header-icon { font-size: 18px; flex-shrink: 0; }
 
 .card-header-title {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-secondary);
+  letter-spacing: 0.2px;
+  color: var(--text-primary);
 }
 
-.card-body { padding: 18px 20px; }
+.card-body { padding: 20px 24px; }
 
 /* ─── Grid layouts ─── */
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 
 .col-span-2 { grid-column: 1 / -1; }
 
 .grid-1 {
   display: grid;
-  gap: 16px;
+  gap: 20px;
 }
 
 /* ─── Firmographic rows ─── */
@@ -537,23 +652,42 @@ button, a { font-family: inherit; }
 .goals-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 14px;
 }
 
 .goal-item {
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(34,197,94,0.06);
-  border: 1px solid rgba(34,197,94,0.12);
-  font-size: 13px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(20,20,24,0.7);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 14px;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.55;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.goal-item:hover {
+  border-color: rgba(34,197,94,0.3);
+  box-shadow: 0 0 20px rgba(34,197,94,0.06), 0 4px 16px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
 }
 
 .goal-num {
-  color: var(--accent-green);
-  font-weight: 700;
-  margin-right: 6px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #34d399 0%, #22c55e 50%, #2dd4bf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+.goal-text {
+  flex: 1;
+  padding-top: 4px;
 }
 
 /* ─── Condition rows ─── */
@@ -581,22 +715,26 @@ button, a { font-family: inherit; }
 }
 
 .condition-verbatim {
-  font-size: 12px;
-  color: var(--text-secondary);
+  font-size: 15px;
+  color: var(--text-primary);
   font-style: italic;
-  padding-left: 12px;
+  font-weight: 600;
   border-left: 3px solid var(--color-virlo);
-  margin-left: 4px;
+  margin-top: 4px;
   line-height: 1.55;
   background: rgba(236,53,134,0.04);
-  padding: 12px 16px;
+  padding: 16px 20px;
   border-radius: 0 12px 12px 0;
 }
 
 .condition-hint {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-bottom: 14px;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
 }
 
 /* ─── False beliefs ─── */
@@ -713,9 +851,13 @@ button, a { font-family: inherit; }
 }
 
 .gloss-hint {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin-bottom: 14px;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
 }
 
 /* ─── Empty state ─── */
@@ -809,7 +951,8 @@ const segments = [
       { name: "Henry Boldizsar", type: "Case Study", segment: "UGC / Consumer Apps", impact: "6/10", highlight: "Built automated pipeline: Apple Shortcuts > N8N > Virlo > ClickUp. 4 internal creators using daily." },
       { name: "Supplement Brand", type: "Discovery Call", segment: "Ecom", impact: "Moderate", highlight: "200 views then 4,000 views - 'we don't know why.' Want every video 'strategically correct.'" },
       { name: "Elvyra / Hamster Agency", type: "Demo Call", segment: "SMMA", impact: "Moderate", highlight: "Multi-niche tracking as agency table stakes. PDF export and outlier creators resonated." },
-      { name: "CT Teacher", type: "Discovery Call", segment: "Education (New)", impact: "Low", highlight: "Educational applications of Virlo's data layer. Not current ICP priority." }
+      { name: "CT Teacher", type: "Discovery Call", segment: "Education (New)", impact: "Low", highlight: "Educational applications of Virlo's data layer. Not current ICP priority." },
+      { name: "Lola Canvas", type: "Demo Call", segment: "Ecom", impact: "Moderate", highlight: "Small ecom operator with no content strategy. Converted immediately after seeing Bloom Nutrition content patterns demo. Post-signup: 'I love Virlo. It cut my research to production time by over half.'" }
     ],
     glossary: [
       { term: "doomscrolling for research", signal: "Pain", desc: "Scrolling TikTok/IG under the guise of working. No alternative system." },
@@ -942,7 +1085,8 @@ const segments = [
       "Every dollar needs to go to ad spend - can't afford another subscription."
     ],
     evidence: [
-      { name: "Supplement Brand", type: "Discovery Call", segment: "Ecom", impact: "Moderate", highlight: "200 views then 4,000 - don't know why. Ideation dries up. Want 'strategically correct' videos." }
+      { name: "Supplement Brand", type: "Discovery Call", segment: "Ecom", impact: "Moderate", highlight: "200 views then 4,000 - don't know why. Ideation dries up. Want 'strategically correct' videos." },
+      { name: "Lola Canvas", type: "Demo Call", segment: "Ecom (Beauty)", impact: "Moderate", highlight: "Mississippi-based beauty ecom brand. Converted on call after Bloom Nutrition content audit demo. 'I am signing up just to get started.' Later testimonial: 'It cut my research to production time by over half.'" }
     ],
     glossary: [
       { term: "freeballing it", signal: "Pain", desc: "Operating without data behind content decisions. Raw, honest, relatable." },
@@ -1184,7 +1328,9 @@ const segments = [
       "Can this help me find what content to make for MY specific product?",
       "I should be spending time building, not learning marketing tools."
     ],
-    evidence: [],
+    evidence: [
+      { name: "Leo", type: "Case Study", segment: "Consumer Apps / Vibe Coder", impact: "5/10", highlight: "Built iOS app on Virlo API with zero technical background. 'I'm a B coder... the process was pretty simple.' Discovered Virlo through organic X." }
+    ],
     glossary: [
       { term: "distribution void", signal: "Pain", desc: "Product exists. Audience doesn't know about it." },
       { term: "build fast, market never", signal: "Pain", desc: "The core vibe coder trap." }
@@ -1288,11 +1434,21 @@ function Sidebar({ active, onSelect }) {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <div className="sidebar-logo-label">Virlo</div>
-        <div className="sidebar-logo-svg">
-          <svg width="72" height="18" viewBox="0 0 72 18" fill="none">
-            <text x="0" y="14" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="800" fill="#ec3586">virlo</text>
+        <div className="sidebar-brand">
+          {/* Virlo V checkmark logo mark */}
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="7" fill="rgba(236,53,134,0.12)" />
+            <rect width="28" height="28" rx="7" stroke="rgba(236,53,134,0.3)" strokeWidth="1" fill="none" />
+            <path d="M7 9L12 19L14 15L16 19L21 9" stroke="#ec3586" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
+          <div>
+            <div className="sidebar-logo-label">Virlo</div>
+            <div className="sidebar-logo-svg">
+              <svg width="52" height="16" viewBox="0 0 52 16" fill="none">
+                <text x="0" y="13" fontFamily="Inter, sans-serif" fontSize="14" fontWeight="800" fill="#f4f4f5">virlo</text>
+              </svg>
+            </div>
+          </div>
         </div>
         <div className="sidebar-title">ICP Intelligence Hub</div>
       </div>
@@ -1323,16 +1479,37 @@ function Sidebar({ active, onSelect }) {
 
 // ===== GLASS CARD =====
 
-function GlassCard({ title, icon, children, className }) {
+function GlassCard({ title, icon, children, className, stripe }) {
+  const stripeColors = {
+    pink: "linear-gradient(to bottom, #ec3586, transparent)",
+    teal: "linear-gradient(to bottom, #2dd4bf, transparent)",
+    purple: "linear-gradient(to bottom, #a78bfa, transparent)",
+    amber: "linear-gradient(to bottom, #fbbf24, transparent)",
+    green: "linear-gradient(to bottom, #22c55e, transparent)",
+    sky: "linear-gradient(to bottom, #38bdf8, transparent)",
+    red: "linear-gradient(to bottom, #ef4444, transparent)",
+    orange: "linear-gradient(to bottom, #f97316, transparent)",
+  };
+
   return (
-    <div className={"glass-card " + (className || "")}>
-      {title && (
-        <div className="card-header">
-          {icon && <span className="card-header-icon">{icon}</span>}
-          <span className="card-header-title">{title}</span>
-        </div>
+    <div className={"glass-card " + (className || "")} style={{ display: "flex", overflow: "hidden" }}>
+      {stripe && (
+        <div style={{
+          width: "4px",
+          flexShrink: 0,
+          background: stripeColors[stripe] || stripeColors.pink,
+          alignSelf: "stretch",
+        }} />
       )}
-      <div className="card-body">{children}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {title && (
+          <div className="card-header">
+            {icon && <span className="card-header-icon">{icon}</span>}
+            <span className="card-header-title">{title}</span>
+          </div>
+        )}
+        <div className="card-body">{children}</div>
+      </div>
     </div>
   );
 }
@@ -1356,6 +1533,12 @@ function SegmentPage({ segment }) {
     <div className="main">
       {/* Segment Header */}
       <div className="seg-header">
+        <div className="seg-header-eyebrow">
+          <div className="section-pill">
+            <span className="pill-tag">SEGMENT</span>
+            ICP Intelligence
+          </div>
+        </div>
         <div className="seg-header-top">
           <span className="seg-icon">{s.icon}</span>
           <div>
@@ -1366,7 +1549,10 @@ function SegmentPage({ segment }) {
         <p className="seg-market">{s.market}</p>
         <div className="seg-clusters">
           {s.problemClusters.map((pc, i) => (
-            <span key={i} className="pill pill-virlo">{pc}</span>
+            <div key={i} className="section-pill" style={{ fontSize: "0.75rem" }}>
+              <span className="pill-tag">PROBLEM</span>
+              {pc}
+            </div>
           ))}
         </div>
       </div>
@@ -1389,7 +1575,7 @@ function SegmentPage({ segment }) {
       {/* Overview */}
       {activeTab === "overview" && (
         <div className="grid-2">
-          <GlassCard title="Firmographics" icon="🏢">
+          <GlassCard title="Firmographics" icon="🏢" stripe="teal">
             {Object.entries(s.firmographics).map(([k, v]) => (
               <div key={k} className="firm-row">
                 <div className="firm-label">
@@ -1400,7 +1586,7 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Key Roles" icon="👤">
+          <GlassCard title="Key Roles" icon="👤" stripe="purple">
             {s.roles.map((r, i) => (
               <div key={i} className="role-row">
                 <div className="role-title">{r.title}</div>
@@ -1409,11 +1595,12 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Top Goals" icon="🎯" className="col-span-2">
+          <GlassCard title="Top Goals" icon="🎯" className="col-span-2" stripe="green">
             <div className="goals-grid">
               {s.goals.map((g, i) => (
                 <div key={i} className="goal-item">
-                  <span className="goal-num">{i + 1}.</span>{g}
+                  <span className="goal-num">{i + 1}</span>
+                  <span className="goal-text">{g}</span>
                 </div>
               ))}
             </div>
@@ -1423,7 +1610,7 @@ function SegmentPage({ segment }) {
 
       {/* Conditions */}
       {activeTab === "conditions" && (
-        <GlassCard title="Current Situation (Conditions)" icon="⚡">
+        <GlassCard title="Current Situation (Conditions)" icon="⚡" stripe="amber">
           <div className="condition-hint">
             Ranked by Potency x Scalability score. Higher = more marketable, more repeatable across segment.
           </div>
@@ -1452,7 +1639,7 @@ function SegmentPage({ segment }) {
       {/* Psychology */}
       {activeTab === "psychology" && (
         <div className="grid-1">
-          <GlassCard title="False Beliefs" icon="🚫">
+          <GlassCard title="False Beliefs" icon="🚫" stripe="red">
             {s.falsBeliefs.map((fb, i) => (
               <div key={i} className="belief-row">
                 <span className={"pill " + getBeliefPillClass(fb.type)}>{fb.type}</span>
@@ -1461,12 +1648,10 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Emotional Drivers" icon="💡">
-            <div className="emotion-row">
-              <div className="emotion-text">
-                <span className="emotion-label" style={{ color: "var(--color-virlo-light)" }}>Core identity:</span>
-                {s.persona}
-              </div>
+          <GlassCard title="Emotional Drivers" icon="💡" stripe="pink">
+            <div className="callout-box" style={{ marginBottom: "14px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-virlo-light)", textTransform: "uppercase", marginBottom: "6px" }}>Core Identity</div>
+              <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.5 }}>"{s.persona}"</div>
             </div>
             <div className="emotion-row">
               <div className="emotion-text">
@@ -1487,7 +1672,7 @@ function SegmentPage({ segment }) {
       {/* Sales Intel */}
       {activeTab === "sales" && (
         <div className="grid-1">
-          <GlassCard title="Buying Triggers" icon="🔥">
+          <GlassCard title="Buying Triggers" icon="🔥" stripe="orange">
             {s.buyingTriggers.map((bt, i) => (
               <div key={i} className="trigger-item">
                 <span className="trigger-arrow">→</span>
@@ -1496,7 +1681,7 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Key Objections" icon="🛡">
+          <GlassCard title="Key Objections" icon="🛡" stripe="sky">
             {s.objections.map((obj, i) => (
               <div key={i} className="objection-item">"{obj}"</div>
             ))}
@@ -1508,25 +1693,37 @@ function SegmentPage({ segment }) {
       {activeTab === "evidence" && (
         <div>
           {s.evidence.length === 0 ? (
-            <GlassCard title="No Real Customer Evidence Yet" icon="📋">
-              <p className="empty-state">
-                This segment's conditions are derived from forum/community research (Reddit, Facebook groups, etc.) and have not yet been validated by real Virlo customer calls or case studies.
-              </p>
-            </GlassCard>
+            <div className="proof-card">
+              <div className="proof-card-header">
+                <span className="proof-card-icon">📋</span>
+                <div>
+                  <div className="proof-card-name">No Real Customer Evidence Yet</div>
+                  <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>Forum-researched segment</div>
+                </div>
+              </div>
+              <div className="proof-card-body">
+                <p className="empty-state">
+                  This segment's conditions are derived from forum/community research (Reddit, Facebook groups, etc.) and have not yet been validated by real Virlo customer calls or case studies.
+                </p>
+              </div>
+            </div>
           ) : (
             s.evidence.map((ev, i) => (
-              <div key={i} className="evidence-card">
-                <GlassCard
-                  title={ev.name}
-                  icon={ev.type === "Case Study" ? "🏆" : "📞"}
-                >
-                  <div className="evidence-badges">
-                    <span className={"pill " + getEvidenceTypePillClass(ev.type)}>{ev.type}</span>
-                    <span className="pill pill-amber">Impact: {ev.impact}</span>
-                    <span className="pill pill-muted">{ev.segment}</span>
+              <div key={i} className="proof-card">
+                <div className="proof-card-header">
+                  <span className="proof-card-icon">{ev.type === "Case Study" ? "🏆" : "📞"}</span>
+                  <div style={{ flex: 1 }}>
+                    <div className="proof-card-name">{ev.name}</div>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "8px" }}>
+                      <span className={"pill " + getEvidenceTypePillClass(ev.type)}>{ev.type}</span>
+                      <span className="pill pill-amber">Impact: {ev.impact}</span>
+                      <span className="pill pill-muted">{ev.segment}</span>
+                    </div>
                   </div>
-                  <p className="evidence-text">{ev.highlight}</p>
-                </GlassCard>
+                </div>
+                <div className="proof-card-body">
+                  <div className="condition-verbatim">{ev.highlight}</div>
+                </div>
               </div>
             ))
           )}
@@ -1535,7 +1732,7 @@ function SegmentPage({ segment }) {
 
       {/* Glossary */}
       {activeTab === "glossary" && (
-        <GlassCard title="Tribal Language" icon="💬">
+        <GlassCard title="Tribal Language" icon="💬" stripe="teal">
           <div className="gloss-hint">
             High-signal phrases from this segment. Use in copy blocks targeting this ICP.
           </div>
