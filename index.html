@@ -681,7 +681,7 @@ const segments = [
   {
     id: "global",
     label: "Global",
-    icon: "\uD83C\uDF0D",
+    icon: "🌍",
     color: "#2dd4bf",
     persona: "The Signal-Starved Operator",
     market: "Short-form content operators across agencies, ecommerce, B2B SaaS GTM, local businesses, and performance creative who depend on TikTok, Instagram Reels, and YouTube Shorts to drive measurable business outcomes.",
@@ -754,7 +754,7 @@ const segments = [
   {
     id: "smma",
     label: "SMMA",
-    icon: "\uD83D\uDCF1",
+    icon: "📱",
     color: "#f472b6",
     persona: "The Strategist Stuck in the Spreadsheet",
     market: "Social media marketing agency owners and small teams (2-15 people) who sell short-form video services - content strategy, organic posting, and increasingly paid creative - to brands.",
@@ -821,7 +821,7 @@ const segments = [
   {
     id: "ecom",
     label: "Ecommerce",
-    icon: "\uD83D\uDED2",
+    icon: "🛒",
     color: "#22c55e",
     persona: "The Burnt-Out Creative Engine Operator",
     market: "DTC ecommerce operators - from solo Shopify founders to small performance marketing squads - who depend on short-form video as their primary customer acquisition channel.",
@@ -885,7 +885,7 @@ const segments = [
   {
     id: "gtm",
     label: "GTM Teams",
-    icon: "\uD83D\uDE80",
+    icon: "🚀",
     color: "#38bdf8",
     persona: "Signal-Starved GTM Lead",
     market: "GTM and marketing teams at B2B SaaS companies (seed to growth-stage, $0-$50M ARR) responsible for turning short-form and social-led campaigns into qualified pipeline and revenue.",
@@ -947,7 +947,7 @@ const segments = [
   {
     id: "local",
     label: "Local",
-    icon: "\uD83C\uDFEA",
+    icon: "🏪",
     color: "#f97316",
     persona: "The Overloaded Local Operator",
     market: "Local business owner-operators and small teams who rely on short-form to generate local demand (calls, DMs, bookings, walk-ins) but lack a repeatable research + performance + reporting system.",
@@ -1008,7 +1008,7 @@ const segments = [
   {
     id: "ugc",
     label: "UGC Engineers",
-    icon: "\uD83C\uDFAC",
+    icon: "🎬",
     color: "#a78bfa",
     persona: "The Systematic Creative Operator",
     market: "Performance-driven creative operators who research, systemize, and ship UGC-style short-form ad creatives, turning competitor + niche signals into repeatable creative tests across TikTok, Reels, YouTube Shorts.",
@@ -1072,7 +1072,7 @@ const segments = [
   {
     id: "vibecoders",
     label: "Vibe Coders",
-    icon: "\uD83D\uDCBB",
+    icon: "💻",
     color: "#fbbf24",
     persona: "The Builder With No Distribution",
     market: "Non-technical and semi-technical builders using AI code generation tools (Cursor, Lovable, Bolt, Replit) who ship products fast but have zero marketing infrastructure, skills, or tools for user acquisition.",
@@ -1124,7 +1124,7 @@ const segments = [
   {
     id: "consumerapps",
     label: "Consumer Apps",
-    icon: "\uD83D\uDCF2",
+    icon: "📲",
     color: "#ef4444",
     persona: "The Content Intelligence Architect",
     market: "App founders and growth operators running consumer-facing mobile or web applications, using short-form content intelligence to drive downloads, engagement, and organic growth.",
@@ -1320,7 +1320,7 @@ function SegmentPage({ segment }) {
       {/* Overview */}
       {activeTab === "overview" && (
         <div className="grid-2">
-          <GlassCard title="Firmographics" icon="\uD83C\uDFE2">
+          <GlassCard title="Firmographics" icon="🏢">
             {Object.entries(s.firmographics).map(([k, v]) => (
               <div key={k} className="firm-row">
                 <div className="firm-label">
@@ -1331,7 +1331,7 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Key Roles" icon="\uD83D\uDC64">
+          <GlassCard title="Key Roles" icon="👤">
             {s.roles.map((r, i) => (
               <div key={i} className="role-row">
                 <div className="role-title">{r.title}</div>
@@ -1340,7 +1340,7 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Top Goals" icon="\uD83C\uDFAF" className="col-span-2">
+          <GlassCard title="Top Goals" icon="🎯" className="col-span-2">
             <div className="goals-grid">
               {s.goals.map((g, i) => (
                 <div key={i} className="goal-item">
@@ -1383,7 +1383,7 @@ function SegmentPage({ segment }) {
       {/* Psychology */}
       {activeTab === "psychology" && (
         <div className="grid-1">
-          <GlassCard title="False Beliefs" icon="\uD83D\uDEAB">
+          <GlassCard title="False Beliefs" icon="🚫">
             {s.falsBeliefs.map((fb, i) => (
               <div key={i} className="belief-row">
                 <span className={"pill " + getBeliefPillClass(fb.type)}>{fb.type}</span>
@@ -1392,7 +1392,7 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Emotional Drivers" icon="\uD83D\uDCA1">
+          <GlassCard title="Emotional Drivers" icon="💡">
             <div className="emotion-row">
               <div className="emotion-text">
                 <span className="emotion-label" style={{ color: "var(--color-virlo-light)" }}>Core identity:</span>
@@ -1418,7 +1418,7 @@ function SegmentPage({ segment }) {
       {/* Sales Intel */}
       {activeTab === "sales" && (
         <div className="grid-1">
-          <GlassCard title="Buying Triggers" icon="\uD83D\uDD25">
+          <GlassCard title="Buying Triggers" icon="🔥">
             {s.buyingTriggers.map((bt, i) => (
               <div key={i} className="trigger-item">
                 <span className="trigger-arrow">\u2192</span>
@@ -1427,7 +1427,7 @@ function SegmentPage({ segment }) {
             ))}
           </GlassCard>
 
-          <GlassCard title="Key Objections" icon="\uD83D\uDEE1">
+          <GlassCard title="Key Objections" icon="🛡">
             {s.objections.map((obj, i) => (
               <div key={i} className="objection-item">"{obj}"</div>
             ))}
@@ -1439,7 +1439,7 @@ function SegmentPage({ segment }) {
       {activeTab === "evidence" && (
         <div>
           {s.evidence.length === 0 ? (
-            <GlassCard title="No Real Customer Evidence Yet" icon="\uD83D\uDCCB">
+            <GlassCard title="No Real Customer Evidence Yet" icon="📋">
               <p className="empty-state">
                 This segment's conditions are derived from forum/community research (Reddit, Facebook groups, etc.) and have not yet been validated by real Virlo customer calls or case studies.
               </p>
@@ -1449,7 +1449,7 @@ function SegmentPage({ segment }) {
               <div key={i} className="evidence-card">
                 <GlassCard
                   title={ev.name}
-                  icon={ev.type === "Case Study" ? "\uD83C\uDFC6" : "\uD83D\uDCDE"}
+                  icon={ev.type === "Case Study" ? "🏆" : "📞"}
                 >
                   <div className="evidence-badges">
                     <span className={"pill " + getEvidenceTypePillClass(ev.type)}>{ev.type}</span>
@@ -1466,7 +1466,7 @@ function SegmentPage({ segment }) {
 
       {/* Glossary */}
       {activeTab === "glossary" && (
-        <GlassCard title="Tribal Language" icon="\uD83D\uDCAC">
+        <GlassCard title="Tribal Language" icon="💬">
           <div className="gloss-hint">
             High-signal phrases from this segment. Use in copy blocks targeting this ICP.
           </div>
