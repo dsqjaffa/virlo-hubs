@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Virlo ICP Intelligence Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --color-virlo: #ec3586;
+    --color-virlo-hover: #d62e75;
+    --color-virlo-light: #ff6b9d;
+    --color-surface: #0c0c0f;
+    --color-surface-raised: #141418;
+    --color-surface-overlay: #1c1c22;
+    --color-surface-border: #2a2a32;
+    --accent-purple: #a78bfa;
+    --accent-teal: #2dd4bf;
+    --accent-amber: #fbbf24;
+    --accent-sky: #38bdf8;
+    --accent-green: #22c55e;
+    --accent-red: #ef4444;
+    --accent-orange: #f97316;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-surface);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Mesh gradient background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 20%, rgba(236,53,134,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(139,92,246,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #root { position: relative; z-index: 1; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-surface); }
+  ::-webkit-scrollbar-thumb { background: var(--color-surface-border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(236,53,134,0.4); }
+
+  ::selection { background: rgba(236,53,134,0.2); color: var(--text-primary); }
+
+  /* Floating orbs */
+  @keyframes float-orb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.95); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: float-orb 20s ease-in-out infinite;
+  }
+  .orb-1 { width: 500px; height: 500px; top: 5%; left: 5%; background: rgba(236,53,134,0.06); animation-delay: 0s; }
+  .orb-2 { width: 400px; height: 400px; top: 55%; right: 5%; background: rgba(139,92,246,0.05); animation-delay: -7s; }
+  .orb-3 { width: 350px; height: 350px; top: 35%; left: 45%; background: rgba(45,212,191,0.04); animation-delay: -14s; }
+
+  /* Layout */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: rgba(20,20,24,0.95);
+    border-right: 1px solid var(--color-surface-border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(12px);
+  }
+
+  .sidebar-header {
+    padding: 20px 16px 18px;
+    border-bottom: 1px solid var(--color-surface-border);
+  }
+
+  .sidebar-logo-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-logo-svg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sidebar-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .sidebar-nav {
+    padding: 10px 8px;
+    flex: 1;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-item:hover {
+    background: rgba(236,53,134,0.06);
+    color: var(--text-secondary);
+  }
+
+  .sidebar-item.active {
+    background: rgba(236,53,134,0.1);
+    color: var(--color-virlo-light);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba(236,53,134,0.2);
+  }
+
+  .sidebar-item-icon { font-size: 15px; flex-shrink: 0; }
+
+  .sidebar-item-dot {
+    margin-left: auto;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-virlo);
+    box-shadow: 0 0 6px var(--color-virlo);
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 14px 16px;
+    border-top: 1px solid var(--color-surface-border);
+  }
+
+  .sidebar-meta {
+    font-size: 10px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* Main content */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    padding: 36px 48px;
+    min-height: 100vh;
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* Glow divider */
+  .glow-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(236,53,134,0.3), transparent);
+    margin: 28px 0;
+    border: none;
+  }
+
+  /* Segment header */
+  .seg-header {
+    margin-bottom: 28px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .seg-header-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .seg-icon { font-size: 36px; line-height: 1; }
+
+  .seg-label {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff6b9d 0%, #ec3586 40%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  .seg-persona {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-virlo-light);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .seg-market {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 760px;
+    margin-bottom: 14px;
+  }
+
+  .seg-clusters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Section pills / badges */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .pill-virlo {
+    background: rgba(236,53,134,0.12);
+    color: var(--color-virlo-light);
+    border-color: rgba(236,53,134,0.25);
+  }
+
+  .pill-purple {
+    background: rgba(167,139,250,0.12);
+    color: var(--accent-purple);
+    border-color: rgba(167,139,250,0.25);
+  }
+
+  .pill-teal {
+    background: rgba(45,212,191,0.12);
+    color: var(--accent-teal);
+    border-color: rgba(45,212,191,0.25);
+  }
+
+  .pill-amber {
+    background: rgba(251,191,36,0.12);
+    color: var(--accent-amber);
+    border-color: rgba(251,191,36,0.25);
+  }
+
+  .pill-green {
+    background: rgba(34,197,94,0.12);
+    color: var(--accent-green);
+    border-color: rgba(34,197,94,0.25);
+  }
+
+  .pill-red {
+    background: rgba(239,68,68,0.12);
+    color: var(--accent-red);
+    border-color: rgba(239,68,68,0.25);
+  }
+
+  .pill-orange {
+    background: rgba(249,115,22,0.12);
+    color: var(--accent-orange);
+    border-color: rgba(249,115,22,0.25);
+  }
+
+  .pill-sky {
+    background: rgba(56,189,248,0.12);
+    color: var(--accent-sky);
+    border-color: rgba(56,189,248,0.25);
+  }
+
+  .pill-muted {
+    background: rgba(113,113,122,0.15);
+    color: var(--text-muted);
+    border-color: rgba(113,113,122,0.2);
+  }
+
+  /* Score pills for P x S */
+  .score-pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .score-green { background: rgba(34,197,94,0.15); color: var(--accent-green); }
+  .score-amber { background: rgba(251,191,36,0.15); color: var(--accent-amber); }
+  .score-orange { background: rgba(249,115,22,0.15); color: var(--accent-orange); }
+  .score-muted { background: rgba(113,113,122,0.15); color: var(--text-muted); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--color-surface-border);
+    margin-bottom: 24px;
+  }
+
+  .tab-btn {
+    padding: 10px 18px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: -1px;
+    letter-spacing: 0.2px;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    color: var(--color-virlo-light);
+    border-bottom-color: var(--color-virlo);
+  }
+
+  /* Glass cards */
+  .glass-card {
+    background: rgba(20,20,24,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(236,53,134,0.18);
+    box-shadow: 0 0 0 1px rgba(236,53,134,0.06), 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-header-icon { font-size: 14px; }
+
+  .card-header-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+  }
+
+  .card-body { padding: 18px 20px; }
+
+  /* Grid layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .col-span-2 { grid-column: 1 / -1; }
+
+  .grid-1 {
+    display: grid;
+    gap: 16px;
+  }
+
+  /* Firmographic rows */
+  .firm-row { margin-bottom: 14px; }
+  .firm-row:last-child { margin-bottom: 0; }
+
+  .firm-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 3px;
+  }
+
+  .firm-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  /* Role rows */
+  .role-row { margin-bottom: 14px; }
+  .role-row:last-child { margin-bottom: 0; }
+
+  .role-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .role-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Goal items */
+  .goals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .goal-item {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(34,197,94,0.06);
+    border: 1px solid rgba(34,197,94,0.12);
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .goal-num {
+    color: var(--accent-green);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+
+  /* Condition rows */
+  .condition-row {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(42,42,50,0.5);
+  }
+  .condition-row:last-child { border-bottom: none; }
+
+  .condition-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .condition-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .condition-verbatim {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid rgba(236,53,134,0.3);
+    margin-left: 4px;
+    line-height: 1.55;
+  }
+
+  .condition-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  /* False beliefs */
+  .belief-row {
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(42,42,50,0.5);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .belief-row:last-child { border-bottom: none; }
+
+  .belief-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.55;
+  }
+
+  /* Emotional drivers card */
+  .emotion-row { margin-bottom: 12px; }
+  .emotion-row:last-child { margin-bottom: 0; }
+  .emotion-label { font-weight: 700; margin-right: 6px; }
+  .emotion-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.65;
+  }
+
+  /* Buying triggers */
+  .trigger-item {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background: rgba(34,197,94,0.05);
+    border: 1px solid rgba(34,197,94,0.1);
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .trigger-item:last-child { margin-bottom: 0; }
+
+  .trigger-arrow {
+    color: var(--accent-green);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Objection items */
+  .objection-item {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background: rgba(239,68,68,0.05);
+    border: 1px solid rgba(239,68,68,0.1);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .objection-item:last-child { margin-bottom: 0; }
+
+  /* Evidence cards */
+  .evidence-card {
+    margin-bottom: 16px;
+  }
+  .evidence-card:last-child { margin-bottom: 0; }
+
+  .evidence-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .evidence-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.65;
+  }
+
+  /* Glossary */
+  .gloss-row {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(42,42,50,0.5);
+  }
+  .gloss-row:last-child { border-bottom: none; }
+
+  .gloss-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .gloss-term {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-virlo-light);
+  }
+
+  .gloss-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .gloss-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  button:focus-visible {
+    outline: 2px solid rgba(236,53,134,0.5);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+// ===== ICP DATA =====
+const segments = [
+  {
+    id: "global",
+    label: "Global",
+    icon: "\uD83C\uDF0D",
+    color: "#2dd4bf",
+    persona: "The Signal-Starved Operator",
+    market: "Short-form content operators across agencies, ecommerce, B2B SaaS GTM, local businesses, and performance creative who depend on TikTok, Instagram Reels, and YouTube Shorts to drive measurable business outcomes.",
+    problemClusters: ["The Research Black Box", "The Spreadsheet Marathon", "Creative Fatigue & the Production Treadmill", "The Attribution / ROI Crisis"],
+    firmographics: {
+      teamSize: "1-15 people, 1-5 directly touching content",
+      revenue: "$5K-$100K MRR (varies by segment)",
+      channels: "TikTok, Instagram Reels, YouTube Shorts, Meta Ads",
+      note: "Rarely a dedicated data/analytics person"
+    },
+    roles: [
+      { title: "Solo Founder / Owner-Operator", desc: "Does everything. Marketing squeezed between operations." },
+      { title: "Agency Owner / Founder", desc: "Operator-strategist hybrid. Can't delegate because no one else has context." },
+      { title: "Content Strategist / Creative Director", desc: "Owns 'what do we post and why.' Spends most time in research-to-brief loop." },
+      { title: "Creative Strategist / UGC Engineer", desc: "Treats creative as a mathematical variable. Owns research-to-brief pipeline." },
+      { title: "VP / Head of Marketing (GTM)", desc: "Justifies short-form to exec team. Needs competitive context for positioning." },
+      { title: "Media Buyer", desc: "Creative is the new targeting. Monitors hook rates, hold rates, CTR daily." }
+    ],
+    conditions: [
+      { text: "Research is manual doomscrolling with no output", potency: 5, scalability: 5, verbatim: "I have thousands of Reels saved for inspo but can never find the specific reference when I'm actually scripting." },
+      { text: "Creative fatigue hits at 21-28 days with no fresh pipeline", potency: 5, scalability: 4, verbatim: "The only way to stay ahead is constantly shooting new content." },
+      { text: "Performance tracking fragmented across native platforms", potency: 4, scalability: 5, verbatim: "1,500 tabs open, manually copy-pasting CPL and ROAS into a bloated Google Sheet while I pray nothing breaks." },
+      { text: "Competitor intelligence is ephemeral - data vanishes", potency: 4, scalability: 4, verbatim: "Ads disappear constantly, nothing can be saved permanently." },
+      { text: "Reporting is manual copy-paste rituals", potency: 4, scalability: 4, verbatim: "6 hours every Sunday manually copying numbers from TikTok/Meta into a spreadsheet." }
+    ],
+    goals: [
+      "Repeatable research-to-creative pipeline - know what works before spending budget",
+      "Higher creative hit rate through data-backed direction",
+      "Persistent competitive intelligence that doesn't vanish",
+      "Research-to-creative-draft in 30 minutes, not 30 hours",
+      "Eliminate diagnostic paralysis when performance drops"
+    ],
+    falsBeliefs: [
+      { type: "Method", text: "Short-form success is mostly gut + volume; data is a nice-to-have." },
+      { type: "Internal", text: "We're not 'data people' - we're creatives who happen to run a business." },
+      { type: "External", text: "Any short-form analytics tool will take more time to set up than it saves." },
+      { type: "External", text: "AI tools just summarize numbers I can already see - they don't tell me what to do." },
+      { type: "Internal", text: "We can't automate creativity." }
+    ],
+    buyingTriggers: [
+      "Creative fatigue hits and revenue drops with no fresh angles ready",
+      "A competitor explodes and they can't reverse-engineer the hooks",
+      "String of creative tests fail; production budget feels wasted",
+      "Manual research/swipe-file workflow collapses under volume",
+      "Hiring external help fails; they want tools they control"
+    ],
+    objections: [
+      "Will this add another dashboard to check, or actually simplify my workflow?",
+      "Can I get this for free from TikTok Creative Center / Meta Ad Library?",
+      "Will my team actually adopt this, or go back to spreadsheets?",
+      "Does this work for my specific niche/product category?",
+      "I don't have budget right now - every dollar needs to go to ad spend."
+    ],
+    evidence: [
+      { name: "Matt Berman, Emerald Digital", type: "Case Study", segment: "SMMA", impact: "9/10", highlight: "11M+ views on a single client video. Built 'Monday Drop' - productized Virlo workflow sold to multiple brands." },
+      { name: "Henry Boldizsar", type: "Case Study", segment: "UGC / Consumer Apps", impact: "6/10", highlight: "Built automated pipeline: Apple Shortcuts > N8N > Virlo > ClickUp. 4 internal creators using daily." },
+      { name: "Supplement Brand", type: "Discovery Call", segment: "Ecom", impact: "Moderate", highlight: "200 views then 4,000 views - 'we don't know why.' Want every video 'strategically correct.'" },
+      { name: "Elvyra / Hamster Agency", type: "Demo Call", segment: "SMMA", impact: "Moderate", highlight: "Multi-niche tracking as agency table stakes. PDF export and outlier creators resonated." },
+      { name: "CT Teacher", type: "Discovery Call", segment: "Education (New)", impact: "Low", highlight: "Educational applications of Virlo's data layer. Not current ICP priority." }
+    ],
+    glossary: [
+      { term: "doomscrolling for research", signal: "Pain", desc: "Scrolling TikTok/IG under the guise of working. No alternative system." },
+      { term: "the blank page problem", signal: "Pain", desc: "Core pain Virlo solves. Empty content calendar with no intelligence to guide." },
+      { term: "cumbersome process", signal: "Pain", desc: "Two power users independently used this word for manual research." },
+      { term: "holy shit, that would have taken me 4 hours", signal: "Aspiration", desc: "The demo moment that converts. Visceral time-savings realization." },
+      { term: "post and pray", signal: "Pain", desc: "Publishing with no feedback mechanism. The 'before' state." },
+      { term: "outliers are the pathway", signal: "Aspiration", desc: "Systematic outlier detection as foundation for content strategy." }
+    ]
+  },
+  {
+    id: "smma",
+    label: "SMMA",
+    icon: "\uD83D\uDCF1",
+    color: "#f472b6",
+    persona: "The Strategist Stuck in the Spreadsheet",
+    market: "Social media marketing agency owners and small teams (2-15 people) who sell short-form video services - content strategy, organic posting, and increasingly paid creative - to brands.",
+    problemClusters: ["The Research Black Box", "The Spreadsheet Marathon", "Operational Burnout"],
+    firmographics: {
+      teamSize: "Founder + 1-5 operators",
+      revenue: "$10K-$100K MRR (retainer stacks $1.5K-$10K/client)",
+      channels: "TikTok (organic + ads + Shop), Instagram Reels, YouTube Shorts, Meta Ads",
+      note: "Typical clients: DTC brands, local businesses, personal brands, SaaS"
+    },
+    roles: [
+      { title: "Agency Owner / Founder", desc: "Owns everything. Sells retainer, sets strategy, does research, builds reports, manages clients." },
+      { title: "Content Strategist / Creative Director", desc: "Responsible for 'what do we post and why' across multiple clients." },
+      { title: "AI-Native Agency Builder", desc: "Builds custom AI/automation workflows on Virlo API. Productizes content intelligence as sellable service." },
+      { title: "Account Manager", desc: "Owns client relationship and reporting cadence. Fields 'What's the ROI?' questions." }
+    ],
+    conditions: [
+      { text: "Research is doomscrolling with no usable output", potency: 5, scalability: 5, verbatim: "We were identifying different creators like manually calculating what the average views was... frankly it was just a cumbersome process." },
+      { text: "Every creative sprint starts from a blank page", potency: 5, scalability: 5, verbatim: "Outliers are the pathway to creating viral content at scale and not just making it up or what do I post - answering that blank page problem." },
+      { text: "Trend response is too slow - days, not hours", potency: 4, scalability: 4, verbatim: "What is the actual workflow for turning a trend into a client brief without it taking 4 hours?" },
+      { text: "Reporting ruins weekends (6+ hrs/client/week)", potency: 4, scalability: 4, verbatim: "Spent 6 hours yesterday pulling a client report." },
+      { text: "Multi-niche tracking is table stakes for agencies", potency: 4, scalability: 5, verbatim: "Whether it only tracks trends for one topic or if a user can filter and search for trends across multiple different fields." }
+    ],
+    goals: [
+      "Repeatable research-to-creative pipeline per client niche",
+      "Stop starting from a blank page - find winning hooks from real data",
+      "Scale to 30+ clients without proportional headcount growth",
+      "Defensible client reporting backed by data",
+      "Reclaim weekends from the Sunday reporting grind"
+    ],
+    falsBeliefs: [
+      { type: "Method", text: "Short-form success is mostly gut + volume; data is a nice-to-have." },
+      { type: "Internal", text: "We're not 'data people' - we're creatives who happen to run an agency." },
+      { type: "Internal", text: "I personally need to do the research because no one else has the context." },
+      { type: "External", text: "Any tool will take more time to set up than it saves (broken connector trauma)." },
+      { type: "External", text: "AI tools just summarize numbers I can already see." }
+    ],
+    buyingTriggers: [
+      "Team spending 10+ hrs/week researching and content still isn't performing",
+      "Lost a client because couldn't explain creative strategy with data",
+      "Competitor agency showed up with niche intelligence; they showed up with gut feeling",
+      "Reporting for X clients now takes full weekends",
+      "Saw a social media post demonstrating automated niche tracking (Matt's trigger)"
+    ],
+    objections: [
+      "Will my team actually use this, or default back to Sheets?",
+      "Does this cover paid media reporting too, or just organic?",
+      "We already have Looker Studio / AgencyAnalytics. Redundant?",
+      "Can I white-label/remove Virlo branding from client reports?",
+      "I'm so subbed out. I don't want to marry someone without dating them."
+    ],
+    evidence: [
+      { name: "Matt Berman, Emerald Digital", type: "Case Study", segment: "SMMA", impact: "9/10", highlight: "Built 'Monday Drop' productized system. 11M+ views client result. Sold process to multiple brands." },
+      { name: "Elvyra / Hamster Agency", type: "Demo Call", segment: "SMMA", impact: "Moderate", highlight: "Multi-niche tracking for gym client. PDF export + outlier creators resonated. Collaborative purchase decision." }
+    ],
+    glossary: [
+      { term: "the blank page problem", signal: "Pain", desc: "Clients don't know what to post. Empty calendar with no intelligence." },
+      { term: "Monday Drop", signal: "Aspiration", desc: "Productized Virlo-powered weekly deliverable. Pull outliers, analyze, deliver." },
+      { term: "I'm so subbed out", signal: "Objection", desc: "Subscription fatigue as identity. Usage-based pricing removes this barrier." },
+      { term: "content factory", signal: "Fear", desc: "What they fear being seen as. Want to be strategic partners." },
+      { term: "What am I paying you for?", signal: "Pain", desc: "The question every agency owner dreads. Shorthand for churn risk." }
+    ]
+  },
+  {
+    id: "ecom",
+    label: "Ecommerce",
+    icon: "\uD83D\uDED2",
+    color: "#22c55e",
+    persona: "The Burnt-Out Creative Engine Operator",
+    market: "DTC ecommerce operators - from solo Shopify founders to small performance marketing squads - who depend on short-form video as their primary customer acquisition channel.",
+    problemClusters: ["Creative Production Burnout & Asset Chaos", "Ephemeral Competitor Intelligence"],
+    firmographics: {
+      teamSize: "Solo founder to 2-5 person team",
+      revenue: "$5K-$50K/mo ad spend (sweet spot)",
+      channels: "TikTok (organic + paid + Shop), Meta Ads, YouTube Shorts, IG Reels",
+      note: "Sells physical products: beauty, supplements, gadgets, apparel"
+    },
+    roles: [
+      { title: "Solo Founder / Owner-Operator", desc: "Does everything. Product sourcing, ad creative, media buying, reporting." },
+      { title: "Media Buyer", desc: "Owns the ad account. Creative is the new targeting." },
+      { title: "Creative Strategist / Head of Growth", desc: "Bridges research and production. Data-driven creative direction." }
+    ],
+    conditions: [
+      { text: "Research is duct-taped (Creative Center > screenshot > Google Sheet)", potency: 5, scalability: 5, verbatim: "We don't really want to waste any more time posting videos with 200 views vs 4,000 views." },
+      { text: "Creative fatigue hits at 21-28 days with no replacement pipeline", potency: 5, scalability: 4, verbatim: "Started off really strong... slowly kind of run out of things to do and say." },
+      { text: "Performance tracking is misleading (high engagement, zero sales)", potency: 4, scalability: 4, verbatim: "27,000 impressions, $7 CPM, 0.56% CTR, only 1 sale for $31." },
+      { text: "Competitor intelligence vanishes when campaigns end", potency: 4, scalability: 4, verbatim: "Ads disappear constantly, nothing can be saved permanently." },
+      { text: "Want every video 'strategically correct'", potency: 5, scalability: 5, verbatim: "We just want to make sure that every video is just like strategically correct." }
+    ],
+    goals: [
+      "Repeatable research-to-creative pipeline before spending production budget",
+      "Higher creative hit rate (above ~10.9% baseline)",
+      "Start from proven niche data, not guesswork",
+      "Spot competitors' winning angles before saturation",
+      "Compress research > brief > creative from hours to minutes"
+    ],
+    falsBeliefs: [
+      { type: "Method", text: "Most ads are supposed to fail - 89% waste is normal." },
+      { type: "Internal", text: "We're too small to benefit from structured analytics." },
+      { type: "External", text: "The free tools (Creative Center, Ad Library) are good enough." },
+      { type: "Internal", text: "Our hit rate is just how this works." },
+      { type: "External", text: "Any analytics tool will just add complexity." }
+    ],
+    buyingTriggers: [
+      "Creative fatigue hits and revenue drops (21-28 day window)",
+      "Competitor explodes on TikTok/Reels - can't reverse-engineer it",
+      "String of creative tests fail ($2K+ wasted, nothing to show)",
+      "Ad that was working suddenly dies during scaling",
+      "Content ideation completely dries up"
+    ],
+    objections: [
+      "Will this simplify my workflow or add another dashboard?",
+      "I can get this for free from TikTok Creative Center / Meta Ad Library.",
+      "Will my team/editors/freelancers actually use this?",
+      "Does this work for my specific niche/product category?",
+      "Every dollar needs to go to ad spend - can't afford another subscription."
+    ],
+    evidence: [
+      { name: "Supplement Brand", type: "Discovery Call", segment: "Ecom", impact: "Moderate", highlight: "200 views then 4,000 - don't know why. Ideation dries up. Want 'strategically correct' videos." }
+    ],
+    glossary: [
+      { term: "freeballing it", signal: "Pain", desc: "Operating without data behind content decisions. Raw, honest, relatable." },
+      { term: "strategically correct", signal: "Aspiration", desc: "Content validated by data before it's made. Not just 'good content.'" },
+      { term: "repeatable creative machine", signal: "Aspiration", desc: "The opposite of the treadmill." },
+      { term: "from trend to ad creative in 30 minutes", signal: "Aspiration", desc: "Time compression promise." }
+    ]
+  },
+  {
+    id: "gtm",
+    label: "GTM Teams",
+    icon: "\uD83D\uDE80",
+    color: "#38bdf8",
+    persona: "Signal-Starved GTM Lead",
+    market: "GTM and marketing teams at B2B SaaS companies (seed to growth-stage, $0-$50M ARR) responsible for turning short-form and social-led campaigns into qualified pipeline and revenue.",
+    problemClusters: ["Manual Competitive Intelligence Friction", "Content Burnout & Creative Fatigue", "Short-Form vs. Tangible Pipeline Dilemma", "Ideation Block"],
+    firmographics: {
+      teamSize: "1-5 people touching content/GTM directly",
+      revenue: "Seed to mid-market ($0-$50M ARR)",
+      channels: "LinkedIn (primary), YouTube Shorts, TikTok (testing), IG Reels",
+      note: "Attribution crisis: can't connect video views to CRM conversions"
+    },
+    roles: [
+      { title: "VP / Head of Marketing", desc: "Justifies short-form to exec team and board. Needs competitive context." },
+      { title: "Head of Demand Gen / Growth Lead", desc: "Pipeline creation. Must prove channel ROI." },
+      { title: "Content / Creative Strategist", desc: "Bridges strategy and production. Owns ideation." },
+      { title: "Founder-Marketer (lean teams)", desc: "Does marketing when there's no dedicated marketer yet." }
+    ],
+    conditions: [
+      { text: "Research is doomscrolling - manual competitor profile hopping", potency: 4, scalability: 4, verbatim: "Clicking profiles, trying to remember which ones I already checked." },
+      { text: "The 'should we even do this?' debate lingers unresolved", potency: 4, scalability: 5, verbatim: "Trust me, it builds brand." },
+      { text: "Stakeholder justification failing without numbers", potency: 4, scalability: 4, verbatim: "What are competitors doing? And nobody has a real answer." },
+      { text: "Multi-channel production burns out small teams", potency: 3, scalability: 4, verbatim: "3-5x/day posting across formats." },
+      { text: "Competitive tracking habit disappears within 2 weeks", potency: 3, scalability: 4, verbatim: "Quietly disappears as operational priorities take over." }
+    ],
+    goals: [
+      "Repeatable research-to-creative pipeline for content category",
+      "Definitive answer to 'should we invest in short-form?' with data",
+      "Data-backed deliverables for stakeholder reporting",
+      "Reclaim 2-3 hrs/week from manual competitive tracking",
+      "Professional intelligence that replaces 'trust me, it builds brand'"
+    ],
+    falsBeliefs: [
+      { type: "Method", text: "Short-form is nice for awareness but pipeline comes from outbound/webinars." },
+      { type: "External", text: "Analytics tools show views and likes but not WHY something went viral." },
+      { type: "Internal", text: "CTOs and enterprise buyers don't scroll TikTok during work hours." },
+      { type: "External", text: "Views and engagement don't map to opportunities." },
+      { type: "Internal", text: "We can't do video because we don't have a creative team." }
+    ],
+    buyingTriggers: [
+      "Creative fatigue collapses content output",
+      "Competitor's content visibly outperforms - can't explain why",
+      "'Should we do TikTok?' debate consumed another quarter",
+      "Exec asks 'what are competitors doing?' and nobody has an answer",
+      "Producing 10 videos to find 1 that works with no idea why"
+    ],
+    objections: [
+      "Will this just become another data silo we don't use?",
+      "Can this show me pipeline impact, or is it just vanity metrics?",
+      "We need to track specific competitor accounts, not just keywords.",
+      "Does it cover LinkedIn and X (Twitter)? (No - only TikTok, Reels, Shorts, Meta Ads)",
+      "Will my team actually adopt this vs. defaulting back to spreadsheets?"
+    ],
+    evidence: [],
+    glossary: [
+      { term: "trust me, it builds brand", signal: "Pain", desc: "The pitch that fails with data-literate stakeholders." },
+      { term: "say 'no' with data", signal: "Aspiration", desc: "Killing unproductive channel debates with evidence." },
+      { term: "stop debating, start knowing", signal: "Aspiration", desc: "The shift from opinion-based to evidence-based." }
+    ]
+  },
+  {
+    id: "local",
+    label: "Local",
+    icon: "\uD83C\uDFEA",
+    color: "#f97316",
+    persona: "The Overloaded Local Operator",
+    market: "Local business owner-operators and small teams who rely on short-form to generate local demand (calls, DMs, bookings, walk-ins) but lack a repeatable research + performance + reporting system.",
+    problemClusters: ["Manual Reporting Marathon", "Ideation Paralysis & Research Blindness", "Burnout + Time Poverty", "Algorithm Volatility & Attribution"],
+    firmographics: {
+      teamSize: "1-10 employees; marketing is one person or a freelancer",
+      revenue: "Varies widely (insufficient data for bands)",
+      channels: "Primarily organic TikTok + Instagram Reels; paid is secondary",
+      note: "Restaurants, salons, trades, studios, clinics, boutique retail"
+    },
+    roles: [
+      { title: "Owner / Operator", desc: "Runs the business AND does marketing. Content happens after the operational day." },
+      { title: "General / Store Manager", desc: "Handles marketing alongside operations management." },
+      { title: "Freelance Social Media Manager", desc: "Executes calendar for 3-8 local clients. Feels spreadsheet marathon most acutely." }
+    ],
+    conditions: [
+      { text: "Research by doomscrolling at night after operational day", potency: 4, scalability: 4, verbatim: "Feeling lost with what to post." },
+      { text: "Marketing marginalized to off-hours (nights/weekends)", potency: 4, scalability: 4, verbatim: "If you've ever watched your weekend vanish into a blur of cuts, captions, and exports." },
+      { text: "Posting cadence inconsistent because ideation stalls", potency: 4, scalability: 4, verbatim: "Content drought hits and nothing gets posted for weeks." },
+      { text: "Attribution broken - content performs but no bookings", potency: 4, scalability: 3, verbatim: "Content performs beautifully but doesn't drive people through your door in 48 hours." },
+      { text: "Manual tracking in Google Sheets (10-15 hrs/month)", potency: 3, scalability: 4, verbatim: "Am I the only one spending 6 hours every Sunday manually copying numbers?" }
+    ],
+    goals: [
+      "Stop starting from blank page - know what formats/hooks are booking calls",
+      "Repeatable way to identify 'what works locally' and build on it",
+      "Validate concepts before committing Friday night filming time",
+      "Predictable local demand from short-form (not random spikes)",
+      "Build content strategy from what's proven, not intuition"
+    ],
+    falsBeliefs: [
+      { type: "External", text: "What works online doesn't always work for my local area." },
+      { type: "Method", text: "Short-form is unpredictable - one post hits, then nothing." },
+      { type: "Internal", text: "I'm not creative enough / I'm not a content person." },
+      { type: "External", text: "Analytics tools are for big teams, not small local businesses." },
+      { type: "Method", text: "I need to figure out the algorithm to succeed." }
+    ],
+    buyingTriggers: [
+      "Ideation stalls and content droughts hit",
+      "Burned out on manual methods after months of scrolling",
+      "Content posted but bookings/calls aren't moving",
+      "Competitor starts winning on short-form locally",
+      "Decide to 'take TikTok/Reels seriously' (new year, slow season)"
+    ],
+    objections: [
+      "Is this going to be too complex for me?",
+      "Will I actually use it consistently, or fall back to posting randomly?",
+      "Will this help local results, not just vanity metrics?",
+      "Does this replace what I'm doing, or add another tool?",
+      "Is it worth paying for when I'm already stretched thin?"
+    ],
+    evidence: [],
+    glossary: [
+      { term: "post and know", signal: "Aspiration", desc: "The inverse of 'post and pray.' Confidence from data." },
+      { term: "post and pray", signal: "Pain", desc: "Publishing with no feedback mechanism." },
+      { term: "I'm not a content person", signal: "Identity", desc: "Self-limiting belief that blocks tool adoption." }
+    ]
+  },
+  {
+    id: "ugc",
+    label: "UGC Engineers",
+    icon: "\uD83C\uDFAC",
+    color: "#a78bfa",
+    persona: "The Systematic Creative Operator",
+    market: "Performance-driven creative operators who research, systemize, and ship UGC-style short-form ad creatives, turning competitor + niche signals into repeatable creative tests across TikTok, Reels, YouTube Shorts.",
+    problemClusters: ["Spreadsheet Nightmare of Manual Tracking", "Creative Fatigue & Rapid Asset Decay", "Vibes vs. Data Communication Gap", "Ineffective Competitor Research Tools"],
+    firmographics: {
+      teamSize: "1-5 people touching creative; larger ops manage 30-50 UGC creators",
+      revenue: "$5K-$15K/mo (solo) to six-figure monthly ad spend (agencies)",
+      channels: "TikTok (organic + paid), IG Reels, YouTube Shorts, Meta Ads, Google PMax",
+      note: "DTC ecommerce (Shopify-centric), app installs, info-products"
+    },
+    roles: [
+      { title: "Creative Strategist / UGC Engineer", desc: "Owns research-to-brief pipeline. Creative as a mathematical variable." },
+      { title: "Performance Marketer / Media Buyer", desc: "Owns ad account. Creative is the targeting." },
+      { title: "Agency Founder / Team Lead", desc: "Decision maker. Manages pod of strategist + designer + buyer." }
+    ],
+    conditions: [
+      { text: "Research is manual and fragmented (doomscroll > screenshot > Notion)", potency: 5, scalability: 5, verbatim: "Painful and easy to drop." },
+      { text: "Spreadsheets break past ~10 creatives/week", potency: 4, scalability: 5, verbatim: "Data stale, formulas break - becomes a 'nightmare.'" },
+      { text: "Creative fatigue forces constant production treadmill (7-10 day decay)", potency: 5, scalability: 4, verbatim: "Winning assets burn out in 7-10 days now vs. weeks/months before." },
+      { text: "Briefs are subjective ('make it punchy') causing revision rounds", potency: 4, scalability: 4, verbatim: "Make it punchy." },
+      { text: "Reporting is a weekend activity across platforms", potency: 3, scalability: 4, verbatim: "Cross-platform data compilation for client reports." }
+    ],
+    goals: [
+      "Systematized research > brief > test pipeline in days",
+      "Performance-indexed creative library (by metrics, not aesthetics)",
+      "Higher creative win rate per sprint",
+      "Data-backed briefs with specific references (CTR, CPM data)",
+      "Know what's winning in niche before production sprint starts"
+    ],
+    falsBeliefs: [
+      { type: "Internal", text: "We don't have time to set up a proper system (setup paralysis)." },
+      { type: "Internal", text: "We need more designers/creators (when bottleneck is communication)." },
+      { type: "Internal", text: "We're too small for real analytics tooling." },
+      { type: "External", text: "Manual tracking is painful but at least I control it (familiar pain over unknown risk)." },
+      { type: "External", text: "Any analytics tool will just become another silo." }
+    ],
+    buyingTriggers: [
+      "Major creative fatigue cycle with no replacement pipeline (7-10 day burnout)",
+      "New client in unfamiliar vertical; need research system",
+      "Competitor lands viral hit; no mechanism to detect/react",
+      "Spreadsheet breaks past ~10 creatives/week",
+      "Team scaling exposes communication failures"
+    ],
+    objections: [
+      "Will this just become another data silo we don't use?",
+      "Will my team actually adopt this vs. defaulting to sheets?",
+      "Keyword-based tracking might miss things.",
+      "Can this fit around our existing stack (Looker, GA, Motion, Triple Whale)?",
+      "Is the data fresh enough to act on? (7-10 day fatigue window)"
+    ],
+    evidence: [
+      { name: "Henry Boldizsar", type: "Case Study", segment: "UGC / Consumer Apps", impact: "6/10", highlight: "Manual outlier ID described as 'crazy.' Built automated pipeline with 4 internal creators." }
+    ],
+    glossary: [
+      { term: "the sellingness", signal: "Pain", desc: "Direct-response conversion intent that ad creative must carry." },
+      { term: "familiar pain over unknown risk", signal: "Objection", desc: "Why they stick with broken spreadsheets." },
+      { term: "signal > tested creative", signal: "Aspiration", desc: "The pipeline they're trying to build." },
+      { term: "ambient intelligence", signal: "Aspiration", desc: "What competitive research becomes when automated." }
+    ]
+  },
+  {
+    id: "vibecoders",
+    label: "Vibe Coders",
+    icon: "\uD83D\uDCBB",
+    color: "#fbbf24",
+    persona: "The Builder With No Distribution",
+    market: "Non-technical and semi-technical builders using AI code generation tools (Cursor, Lovable, Bolt, Replit) who ship products fast but have zero marketing infrastructure, skills, or tools for user acquisition.",
+    problemClusters: ["The Distribution Void", "The Marketing Skills Gap", "Content Creation Paralysis"],
+    firmographics: {
+      teamSize: "Solo; occasionally 2-person teams",
+      revenue: "Pre-revenue to sub-$1K MRR; outliers at $207K ARR",
+      channels: "Building products but no marketing channels established",
+      note: "Consumer apps, micro-SaaS, AI wrappers. Build speed: days to weeks."
+    },
+    roles: [
+      { title: "Solo Founder / Indie Hacker", desc: "Can build fast; can't market at all. Zero marketing infrastructure." },
+      { title: "Non-Technical Builder", desc: "Uses AI tools to code. Marketing is the bottleneck, not development." }
+    ],
+    conditions: [
+      { text: "Shipped product but no distribution channel", potency: 5, scalability: 5, verbatim: "557K new app submissions in 2025. Most die in obscurity." },
+      { text: "Can build fast but marketing feels impossible", potency: 5, scalability: 5, verbatim: "Build speed: days. Distribution: zero." },
+      { text: "Content creation paralyzed without marketing background", potency: 4, scalability: 4, verbatim: "What do I even post? I'm a builder, not a marketer." },
+      { text: "No connection between product and potential audience", potency: 4, scalability: 4, verbatim: "I know people need this. I just can't find them." }
+    ],
+    goals: [
+      "Get initial users / establish a distribution channel",
+      "Create marketing content without hiring a marketer",
+      "Learn content marketing while shipping product",
+      "Scale organic growth alongside product development"
+    ],
+    falsBeliefs: [
+      { type: "Internal", text: "I'm a builder, not a marketer - marketing is someone else's job." },
+      { type: "Method", text: "If I build something good enough, users will find it." },
+      { type: "External", text: "Marketing requires a big budget or a team." }
+    ],
+    buyingTriggers: [
+      "Product built but no users found",
+      "Launched but can't drive downloads/signups",
+      "See other indie hackers succeeding with short-form content",
+      "Revenue stuck at $0 despite working product"
+    ],
+    objections: [
+      "I don't have marketing experience - will I even know how to use this?",
+      "Can this help me find what content to make for MY specific product?",
+      "I should be spending time building, not learning marketing tools."
+    ],
+    evidence: [],
+    glossary: [
+      { term: "distribution void", signal: "Pain", desc: "Product exists. Audience doesn't know about it." },
+      { term: "build fast, market never", signal: "Pain", desc: "The core vibe coder trap." }
+    ]
+  },
+  {
+    id: "consumerapps",
+    label: "Consumer Apps",
+    icon: "\uD83D\uDCF2",
+    color: "#ef4444",
+    persona: "The Content Intelligence Architect",
+    market: "App founders and growth operators running consumer-facing mobile or web applications, using short-form content intelligence to drive downloads, engagement, and organic growth.",
+    problemClusters: ["Organic-to-Paid Creative Gap", "Manual Outlier Identification", "Content Research Infrastructure"],
+    firmographics: {
+      teamSize: "Solo to small teams with dedicated creators",
+      revenue: "Insufficient data (from pre-revenue to established with paid ads)",
+      channels: "TikTok (organic + Shop), IG Reels, YouTube Shorts, Meta Ads (paid)",
+      note: "SEED-STAGE ICP - built from 2 case studies only"
+    },
+    roles: [
+      { title: "App Growth Operator", desc: "Performance creative lead. Bridges organic and paid creative intelligence." },
+      { title: "No-Code API Builder", desc: "Indie app publisher building on Virlo's data layer." }
+    ],
+    conditions: [
+      { text: "Manual outlier identification is 'crazy' and unscalable", potency: 4, scalability: 4, verbatim: "Crazy and absurdly tedious." },
+      { text: "Organic vs. paid creative tension (ads must sell; organic must engage)", potency: 4, scalability: 5, verbatim: "Combining the direct response needs of advertising - the 'sellingness' - with high engagement generated by organic content." },
+      { text: "Content pipeline requires multiple disconnected tools", potency: 3, scalability: 4, verbatim: "N8N, ClickUp, Apple Shortcuts, audience proxy." },
+      { text: "Manual research delays smaller projects", potency: 3, scalability: 4, verbatim: "With any friction, there's things you don't always want to do. Smaller ones maybe come later." }
+    ],
+    goals: [
+      "Bridge organic engagement patterns with paid creative",
+      "Automate content intelligence (no manual effort)",
+      "Give internal creators self-serve access to inspiration",
+      "Build on top of Virlo's data layer (API, webhooks)",
+      "Scale creative production without scaling headcount"
+    ],
+    falsBeliefs: [
+      { type: "Method", text: "Organic content is more competitive than paid, therefore superior for intelligence (actually TRUE)." },
+      { type: "External", text: "The API is cumbersome (adoption barrier, but preferred interface for power users)." }
+    ],
+    buyingTriggers: [
+      "Heard 'outlier score' from multiple industry advisors / word-of-mouth",
+      "Found Virlo through organic X discovery",
+      "Scaling creative production; need automation",
+      "Manual research process breaking under volume"
+    ],
+    objections: [
+      "The API is cumbersome (but also signal of deep integration intent).",
+      "Time switching costs are too high (stickiness once adopted).",
+      "Need more case studies before committing."
+    ],
+    evidence: [
+      { name: "Henry Boldizsar", type: "Case Study", segment: "Consumer Apps", impact: "6/10", highlight: "Built automated pipeline. Outlier score discovered via multiple advisor recommendations." },
+      { name: "Leo", type: "Case Study", segment: "Consumer Apps", impact: "5/10", highlight: "Built iOS app on Virlo API with zero technical background. 'I'm a B coder... the process was pretty simple.'" }
+    ],
+    glossary: [
+      { term: "time switching costs", signal: "Stickiness", desc: "Why power users won't migrate even when alternatives are easier." },
+      { term: "the sellingness", signal: "Pain", desc: "DR conversion intent that ad creative must carry." }
+    ]
+  }
+];
+
+// ===== HELPERS =====
+
+function getPillClass(signal) {
+  const map = {
+    Pain: "pill-red",
+    Aspiration: "pill-green",
+    Objection: "pill-orange",
+    Fear: "pill-red",
+    Identity: "pill-purple",
+    Stickiness: "pill-teal"
+  };
+  return map[signal] || "pill-muted";
+}
+
+function getBeliefPillClass(type) {
+  if (type === "Method") return "pill-orange";
+  if (type === "Internal") return "pill-purple";
+  return "pill-sky";
+}
+
+function getScoreClass(score) {
+  if (score >= 20) return "score-green";
+  if (score >= 15) return "score-amber";
+  if (score >= 10) return "score-orange";
+  return "score-muted";
+}
+
+function getEvidenceTypePillClass(type) {
+  if (type === "Case Study") return "pill-green";
+  if (type === "Demo Call") return "pill-sky";
+  return "pill-virlo";
+}
+
+// ===== SIDEBAR =====
+
+function Sidebar({ active, onSelect }) {
+  const totalEvidence = segments.reduce((a, s) => a + s.evidence.length, 0);
+
+  return (
+    <div className="sidebar">
+      <div className="sidebar-header">
+        <div className="sidebar-logo-label">Virlo</div>
+        <div className="sidebar-logo-svg">
+          <svg width="72" height="18" viewBox="0 0 72 18" fill="none">
+            <text x="0" y="14" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="800" fill="#ec3586">virlo</text>
+          </svg>
+        </div>
+        <div className="sidebar-title">ICP Intelligence Hub</div>
+      </div>
+
+      <nav className="sidebar-nav">
+        {segments.map(s => (
+          <button
+            key={s.id}
+            className={"sidebar-item" + (active === s.id ? " active" : "")}
+            onClick={() => onSelect(s.id)}
+          >
+            <span className="sidebar-item-icon">{s.icon}</span>
+            <span>{s.label}</span>
+            {active === s.id && <span className="sidebar-item-dot" />}
+          </button>
+        ))}
+      </nav>
+
+      <div className="sidebar-footer">
+        <div className="sidebar-meta">
+          8 segments / {totalEvidence} evidence entries<br />
+          Last updated: March 2026
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== GLASS CARD =====
+
+function GlassCard({ title, icon, children, className }) {
+  return (
+    <div className={"glass-card " + (className || "")}>
+      {title && (
+        <div className="card-header">
+          {icon && <span className="card-header-icon">{icon}</span>}
+          <span className="card-header-title">{title}</span>
+        </div>
+      )}
+      <div className="card-body">{children}</div>
+    </div>
+  );
+}
+
+// ===== SEGMENT PAGE =====
+
+function SegmentPage({ segment }) {
+  const s = segment;
+  const [activeTab, setActiveTab] = React.useState("overview");
+
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "conditions", label: "Conditions" },
+    { id: "psychology", label: "Psychology" },
+    { id: "sales", label: "Sales Intel" },
+    { id: "evidence", label: "Evidence (" + s.evidence.length + ")" },
+    { id: "glossary", label: "Glossary" }
+  ];
+
+  return (
+    <div className="main">
+      {/* Segment Header */}
+      <div className="seg-header">
+        <div className="seg-header-top">
+          <span className="seg-icon">{s.icon}</span>
+          <div>
+            <div className="seg-label">{s.label}</div>
+            <div className="seg-persona">"{s.persona}"</div>
+          </div>
+        </div>
+        <p className="seg-market">{s.market}</p>
+        <div className="seg-clusters">
+          {s.problemClusters.map((pc, i) => (
+            <span key={i} className="pill pill-virlo">{pc}</span>
+          ))}
+        </div>
+      </div>
+
+      <hr className="glow-divider" />
+
+      {/* Tabs */}
+      <div className="tabs">
+        {tabs.map(t => (
+          <button
+            key={t.id}
+            className={"tab-btn" + (activeTab === t.id ? " active" : "")}
+            onClick={() => setActiveTab(t.id)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Overview */}
+      {activeTab === "overview" && (
+        <div className="grid-2">
+          <GlassCard title="Firmographics" icon="\uD83C\uDFE2">
+            {Object.entries(s.firmographics).map(([k, v]) => (
+              <div key={k} className="firm-row">
+                <div className="firm-label">
+                  {k === "teamSize" ? "Team Size" : k === "note" ? "Note" : k.charAt(0).toUpperCase() + k.slice(1)}
+                </div>
+                <div className="firm-value">{v}</div>
+              </div>
+            ))}
+          </GlassCard>
+
+          <GlassCard title="Key Roles" icon="\uD83D\uDC64">
+            {s.roles.map((r, i) => (
+              <div key={i} className="role-row">
+                <div className="role-title">{r.title}</div>
+                <div className="role-desc">{r.desc}</div>
+              </div>
+            ))}
+          </GlassCard>
+
+          <GlassCard title="Top Goals" icon="\uD83C\uDFAF" className="col-span-2">
+            <div className="goals-grid">
+              {s.goals.map((g, i) => (
+                <div key={i} className="goal-item">
+                  <span className="goal-num">{i + 1}.</span>{g}
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      {/* Conditions */}
+      {activeTab === "conditions" && (
+        <GlassCard title="Current Situation (Conditions)" icon="\u26A1">
+          <div className="condition-hint">
+            Ranked by Potency x Scalability score. Higher = more marketable, more repeatable across segment.
+          </div>
+          {s.conditions
+            .slice()
+            .sort((a, b) => (b.potency * b.scalability) - (a.potency * a.scalability))
+            .map((c, i) => {
+              const score = (c.potency || 0) * (c.scalability || 0);
+              return (
+                <div key={i} className="condition-row">
+                  <div className="condition-top">
+                    <span className={"score-pill " + getScoreClass(score)}>
+                      P{c.potency} x S{c.scalability} = {score}
+                    </span>
+                    <span className="condition-text">{c.text}</span>
+                  </div>
+                  {c.verbatim && (
+                    <div className="condition-verbatim">"{c.verbatim}"</div>
+                  )}
+                </div>
+              );
+            })}
+        </GlassCard>
+      )}
+
+      {/* Psychology */}
+      {activeTab === "psychology" && (
+        <div className="grid-1">
+          <GlassCard title="False Beliefs" icon="\uD83D\uDEAB">
+            {s.falsBeliefs.map((fb, i) => (
+              <div key={i} className="belief-row">
+                <span className={"pill " + getBeliefPillClass(fb.type)}>{fb.type}</span>
+                <span className="belief-text">{fb.text}</span>
+              </div>
+            ))}
+          </GlassCard>
+
+          <GlassCard title="Emotional Drivers" icon="\uD83D\uDCA1">
+            <div className="emotion-row">
+              <div className="emotion-text">
+                <span className="emotion-label" style={{ color: "var(--color-virlo-light)" }}>Core identity:</span>
+                {s.persona}
+              </div>
+            </div>
+            <div className="emotion-row">
+              <div className="emotion-text">
+                <span className="emotion-label" style={{ color: "var(--accent-green)" }}>They want to feel:</span>
+                Data-driven, strategic, in control, confident in client calls
+              </div>
+            </div>
+            <div className="emotion-row">
+              <div className="emotion-text">
+                <span className="emotion-label" style={{ color: "var(--accent-red)" }}>They fear:</span>
+                Being exposed as guessing, losing clients to competitors with better intelligence, burning out
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      {/* Sales Intel */}
+      {activeTab === "sales" && (
+        <div className="grid-1">
+          <GlassCard title="Buying Triggers" icon="\uD83D\uDD25">
+            {s.buyingTriggers.map((bt, i) => (
+              <div key={i} className="trigger-item">
+                <span className="trigger-arrow">\u2192</span>
+                <span>{bt}</span>
+              </div>
+            ))}
+          </GlassCard>
+
+          <GlassCard title="Key Objections" icon="\uD83D\uDEE1">
+            {s.objections.map((obj, i) => (
+              <div key={i} className="objection-item">"{obj}"</div>
+            ))}
+          </GlassCard>
+        </div>
+      )}
+
+      {/* Evidence */}
+      {activeTab === "evidence" && (
+        <div>
+          {s.evidence.length === 0 ? (
+            <GlassCard title="No Real Customer Evidence Yet" icon="\uD83D\uDCCB">
+              <p className="empty-state">
+                This segment's conditions are derived from forum/community research (Reddit, Facebook groups, etc.) and have not yet been validated by real Virlo customer calls or case studies.
+              </p>
+            </GlassCard>
+          ) : (
+            s.evidence.map((ev, i) => (
+              <div key={i} className="evidence-card">
+                <GlassCard
+                  title={ev.name}
+                  icon={ev.type === "Case Study" ? "\uD83C\uDFC6" : "\uD83D\uDCDE"}
+                >
+                  <div className="evidence-badges">
+                    <span className={"pill " + getEvidenceTypePillClass(ev.type)}>{ev.type}</span>
+                    <span className="pill pill-amber">Impact: {ev.impact}</span>
+                    <span className="pill pill-muted">{ev.segment}</span>
+                  </div>
+                  <p className="evidence-text">{ev.highlight}</p>
+                </GlassCard>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Glossary */}
+      {activeTab === "glossary" && (
+        <GlassCard title="Tribal Language" icon="\uD83D\uDCAC">
+          <div className="gloss-hint">
+            High-signal phrases from this segment. Use in copy blocks targeting this ICP.
+          </div>
+          {s.glossary.map((g, i) => (
+            <div key={i} className="gloss-row">
+              <div className="gloss-top">
+                <span className="gloss-term">"{g.term}"</span>
+                <span className={"pill " + getPillClass(g.signal)}>{g.signal}</span>
+              </div>
+              <div className="gloss-desc">{g.desc}</div>
+            </div>
+          ))}
+        </GlassCard>
+      )}
+    </div>
+  );
+}
+
+// ===== APP =====
+
+function App() {
+  const [activeSegment, setActiveSegment] = React.useState("global");
+  const segment = segments.find(s => s.id === activeSegment);
+
+  return (
+    <div className="layout">
+      <Sidebar active={activeSegment} onSelect={id => setActiveSegment(id)} />
+      {segment && <SegmentPage key={segment.id} segment={segment} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
