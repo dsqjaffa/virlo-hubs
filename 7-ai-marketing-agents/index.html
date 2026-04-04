@@ -830,7 +830,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
         <div style="flex: 1; background: rgba(45,212,191,0.06); border: 1px solid rgba(45,212,191,0.2); border-radius: 12px; padding: 24px;">
           <div class="stage-pill teal" style="margin-bottom: 16px;">Stage 1</div>
           <div style="font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">Virlo API</div>
-          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">The intelligence layer. Orbit Search, Custom Niches, Outlier Detection, Meta Ads Intelligence. Surfaces what&rsquo;s already outperforming in your market across TikTok, Reels, Shorts, and Meta Ads.</div>
+          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">The intelligence layer. Orbit Search, Content Agents, Outlier Detection, Meta Ads Intelligence. Surfaces what&rsquo;s already outperforming in your market across TikTok, Reels, Shorts, and Meta Ads.</div>
           <div style="font-size: 12px; font-family: monospace; color: var(--accent-teal); background: rgba(45,212,191,0.08); padding: 8px 12px; border-radius: 6px;">dev.virlo.ai/docs</div>
         </div>
 
@@ -908,7 +908,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
           <div class="step-badge purple">02</div>
           <div>
-            <div style="font-size: 17px; font-weight: 700;">Custom Niches (Comets)</div>
+            <div style="font-size: 17px; font-weight: 700;">Content Agents (Comets)</div>
             <div style="font-size: 12px; color: var(--text-muted); font-family: monospace;">GET /v1/comet/{id}/videos</div>
           </div>
         </div>
@@ -1079,7 +1079,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
             </div>
           </div>
           <div class="callout-box purple">
-            <strong style="color: var(--accent-purple);">Virlo Integration (Custom Niches + Outlier Detection):</strong> Custom Niches provide a weekly feed of outlier content with proven hooks, emotional triggers, and format patterns from your competitive landscape. Feed these directly to /copywriting and /social-content. Your AI copywriter writes from the emotional triggers that are already working in your market, not from what it imagines might work.
+            <strong style="color: var(--accent-purple);">Virlo Integration (Content Agents + Outlier Detection):</strong> Content Agents provide a weekly feed of outlier content with proven hooks, emotional triggers, and format patterns from your competitive landscape. Feed these directly to /copywriting and /social-content. Your AI copywriter writes from the emotional triggers that are already working in your market, not from what it imagines might work.
           </div>
         </div>
       </div>
@@ -1259,7 +1259,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
             </div>
           </div>
           <div class="callout-box purple">
-            <strong style="color: var(--accent-purple);">Virlo Integration (Satellite + Custom Niches):</strong> Satellite creator lookups (GET /v1/satellite/creator/{platform}/{username}) identify potential partners, affiliates, and referral candidates by their content performance. Custom Niche data reveals which content formats drive the most loyal engagement signals. Feed these to /referral-program and /churn-prevention. Your growth agent finds real partnership opportunities, not hypothetical ones.
+            <strong style="color: var(--accent-purple);">Virlo Integration (Satellite + Content Agents):</strong> Satellite creator lookups (GET /v1/satellite/creator/{platform}/{username}) identify potential partners, affiliates, and referral candidates by their content performance. Content Agent data reveals which content formats drive the most loyal engagement signals. Feed these to /referral-program and /churn-prevention. Your growth agent finds real partnership opportunities, not hypothetical ones.
           </div>
         </div>
       </div>
@@ -1356,8 +1356,8 @@ Then do the following:
    - Return the top 20 outlier videos with engagement data, outlier ratios, and AI analysis
    - Save the full response to .tmp/virlo-orbit-baseline.json
 
-2. CUSTOM NICHE SETUP:
-   - Create a new Comet (Custom Niche) via POST /v1/comet
+2. CONTENT AGENT SETUP:
+   - Create a new Comet (Content Agent) via POST /v1/comet
    - Track keyword: [INSERT YOUR MARKET]
    - This will auto-refresh and surface new outliers continuously
    - Save the comet ID to .env as VIRLO_COMET_ID
@@ -1424,7 +1424,7 @@ Output: A structured list. Format it so I can use it directly as the team struct
               <h3 style="font-size: 20px; font-weight: 700;">Define Daily Duties With Virlo Data Inputs</h3>
             </div>
             <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6;">
-              Every employee's daily duties begin with a Virlo data pull. The content employee starts by reviewing Custom Niche outliers. The ad employee starts with Meta Ads Intelligence. The SEO employee checks Orbit for trending topics. Signal first. Execution second.
+              Every employee's daily duties begin with a Virlo data pull. The content employee starts by reviewing Content Agent outliers. The ad employee starts with Meta Ads Intelligence. The SEO employee checks Orbit for trending topics. Signal first. Execution second.
             </p>
             <div class="template-box" id="prompt4" style="padding-top: 48px;">
               <button class="copy-btn" onclick="copyPrompt('prompt4', this)">Copy</button>For each of the 7 AI marketing employees, define a structured duty schedule where every daily task begins with a Virlo data pull.
@@ -1433,7 +1433,7 @@ For each employee, produce:
 
 DAILY DUTIES (3-5 tasks performed every day):
 - Task 1 is ALWAYS: Pull fresh data from [specific Virlo endpoint for this employee]
-  Example for Content employee: "Pull latest outliers from Custom Niche via GET /v1/comet/{VIRLO_COMET_ID}/videos"
+  Example for Content employee: "Pull latest outliers from Content Agent via GET /v1/comet/{VIRLO_COMET_ID}/videos"
   Example for Ads employee: "Run Orbit search with enable_meta_ads: true on target keyword"
   Example for SEO employee: "Pull top 10 outlier videos from Orbit for primary topic cluster"
 - Tasks 2-5: What they produce or update based on that signal
@@ -1470,7 +1470,7 @@ Knowledge: Reference .tmp/virlo-signal-brief.md for the baseline intelligence co
 For each employee, produce:
 
 SYSTEM PROMPT (150-200 words):
-Who this employee is, what domain they own, what their success metric is, how they approach every task. Written in second person. The first sentence must reference their Virlo intelligence source. Example: "You are the Content Intelligence Officer. Before producing any content output, you pull the latest outlier data from the Virlo Custom Niche API (GET /v1/comet/{VIRLO_COMET_ID}/videos) and extract the top 3 hook structures from the current week's outliers. Every piece of content you write is modeled on those structures."
+Who this employee is, what domain they own, what their success metric is, how they approach every task. Written in second person. The first sentence must reference their Virlo intelligence source. Example: "You are the Content Intelligence Officer. Before producing any content output, you pull the latest outlier data from the Virlo Content Agent API (GET /v1/comet/{VIRLO_COMET_ID}/videos) and extract the top 3 hook structures from the current week's outliers. Every piece of content you write is modeled on those structures."
 
 SKILL INVOCATION SEQUENCE:
 Step 1 is always a Virlo API call. Step 2 is parsing and summarizing that data. Step 3 onward is the skill invocation using that data as input. List the exact slash commands and parameters.
