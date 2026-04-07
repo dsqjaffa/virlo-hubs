@@ -815,7 +815,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
             <span style="color: var(--text-secondary);">Your ad creative agent doesn&rsquo;t write hooks from imagination. It writes hooks modeled on the creatives that are actively getting budget right now in your vertical.</span>
           </div>
           <div class="callout-box sky">
-            <span style="color: var(--text-secondary);">You don&rsquo;t learn the Virlo API yourself. Claude Code reads the API docs at dev.virlo.ai and wires up the integration automatically. One API key is all you provide.</span>
+            <span style="color: var(--text-secondary);">You don&rsquo;t learn the Virlo API yourself. Claude Code reads the API docs at dev.virlo.ai/?via=organic and wires up the integration automatically. One API key is all you provide.</span>
           </div>
         </div>
       </div>
@@ -831,7 +831,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
           <div class="stage-pill teal" style="margin-bottom: 16px;">Stage 1</div>
           <div style="font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">Virlo API</div>
           <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">The intelligence layer. Orbit Search, Content Agents, Outlier Detection, Meta Ads Intelligence. Surfaces what&rsquo;s already outperforming in your market across TikTok, Reels, Shorts, and Meta Ads.</div>
-          <div style="font-size: 12px; font-family: monospace; color: var(--accent-teal); background: rgba(45,212,191,0.08); padding: 8px 12px; border-radius: 6px;">dev.virlo.ai/docs</div>
+          <div style="font-size: 12px; font-family: monospace; color: var(--accent-teal); background: rgba(45,212,191,0.08); padding: 8px 12px; border-radius: 6px;">dev.virlo.ai/docs?via=organic</div>
         </div>
 
         <div style="display: flex; align-items: center; padding: 0 8px;">
@@ -1293,7 +1293,7 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
       </div>
       <div>
         <div class="callout-box teal">
-          <strong style="color: var(--accent-teal);">The constraint dissolved:</strong> You do not need to learn the Virlo API yourself. Claude Code reads the API docs at dev.virlo.ai/docs and integrates the calls automatically. You provide the API key. The agents handle the rest.
+          <strong style="color: var(--accent-teal);">The constraint dissolved:</strong> You do not need to learn the Virlo API yourself. Claude Code reads the API docs at dev.virlo.ai/docs?via=organic and integrates the calls automatically. You provide the API key. The agents handle the rest.
         </div>
       </div>
     </div>
@@ -1316,13 +1316,13 @@ section { position: relative; padding: 88px 0; width: 100%; overflow-x: hidden; 
 npx skills add coreyhaines31/marketingskills
 
 # Step 2: Get your Virlo API key
-# Go to dev.virlo.ai -> API Keys -> Create Key
+# Go to dev.virlo.ai/?via=organic -> API Keys -> Create Key
 
 # Step 3: Add your Virlo API key to your environment
 echo "VIRLO_API_KEY=your_key_here" >> .env
 
 # Step 4: Verify the Virlo API docs are accessible
-# Claude Code will read https://dev.virlo.ai/docs automatically
+# Claude Code will read https://dev.virlo.ai/docs?via=organic automatically
 # when you reference Virlo API calls in your prompts
 
 # Step 5: Create your product context file
@@ -1346,7 +1346,7 @@ touch product-marketing-context.md</div>
             <div class="template-box purple" id="prompt2" style="padding-top: 48px;">
               <button class="copy-btn" onclick="copyPrompt('prompt2', this)">Copy</button>Goal: Configure Virlo to track my market and establish a baseline intelligence layer that all 7 AI marketing agents will reference.
 
-Read the Virlo API documentation at https://dev.virlo.ai/docs.
+Read the Virlo API documentation at https://dev.virlo.ai/docs?via=organic.
 
 Then do the following:
 
@@ -1561,7 +1561,7 @@ Output: A complete instruction package per employee. Format each one as a separa
       <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
         <a href="https://tiktok.com/@nocode.joshua" target="_blank" rel="noopener" style="font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Source Video</a>
         <a href="https://github.com/coreyhaines31/marketingskills" target="_blank" rel="noopener" style="font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">GitHub Repo</a>
-        <a href="https://dev.virlo.ai/docs" target="_blank" rel="noopener" style="font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Virlo API Docs</a>
+        <a href="https://dev.virlo.ai/docs?via=organic" target="_blank" rel="noopener" style="font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Virlo API Docs</a>
       </div>
     </div>
     <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.04); text-align: center;">
